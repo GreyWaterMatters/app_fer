@@ -1,0 +1,11 @@
+.button.is-primary{
+    background-color: #c454cb;
+}
+
+nav.navbar {
+    min-height: 5rem;
+}
+
+img.home-image {
+    max-height: none;
+}
