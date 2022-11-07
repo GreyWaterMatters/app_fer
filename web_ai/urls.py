@@ -16,11 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from .views import index, webcam, webcam_feed
+from .views import index, webcam, webcam_feed, register_request
 
 urlpatterns = [
     path("", index, name="homepage"),
     path("webcam/", webcam, name="webcam"),
     path("webcam_feed", webcam_feed, name="webcam_feed"),
+    path("sign_up/", register_request, name="register"),
     path('admin/', admin.site.urls),
 ]
