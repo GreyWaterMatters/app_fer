@@ -2,10 +2,38 @@
     background-color: #c454cb;
 }
 
-nav.navbar {
-    min-height: 5rem;
+.button.is-primary:hover{
+    background-color: #6e39a3;
 }
 
-img.home-image {
-    max-height: none;
+.navbar-item img {
+    max-height: 2rem;
+}
+
+.home-image {
+    display: block;
+    margin: 1rem auto;
+    width: 70%;
+    height: auto;
+}
+
+.home-button {
+    display: flex;
+    justify-content: center;
+}
+
+.select-option {
+    margin: 0 1rem;
+}
+
+.form-box {
+    margin: 1.5rem;
+}
+
+.sign-up {
+    margin: 0;
+    position: absolute;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
 }
