@@ -12,8 +12,7 @@ CREATE DOMAIN email AS text -- un domaine (type de donnée) permettant de vérif
 
 CREATE TABLE "user"(
     id int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    firstname text NOT NULL,
-    lastname TEXT NOT NULL,
+    username text NOT NULL,
     email email NOT NULL UNIQUE,
     "password" text NOT NULL
 );

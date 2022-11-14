@@ -3,55 +3,59 @@
 {% include "header.html" %}
 
 <main>
-  <div class="form-box">
+  <form class="form-box" method="POST">
+    {% csrf_token %}
+    <label class="label">Nom d'utilisateur</label>
     <div class="field">
-      <label class="label">Prénom</label>
-      <div class="control">
-        <input class="input" type="text" placeholder="Text input">
-      </div>
+      <p class="control has-icons-left has-icons-right">
+        <input class="input" type="email" placeholder="Nom d'utilisateur">
+        <span class="icon is-small is-left">
+          <i class="fas fa-envelope"></i>
+        </span>
+        <span class="icon is-small is-right">
+          <i class="fas fa-check"></i>
+        </span>
+      </p>
     </div>
 
+    <label class="label">Email</label>
     <div class="field">
-      <label class="label">Nom</label>
-      <div class="control">
-        <input class="input" type="text" placeholder="Text input">
-      </div>
+      <p class="control has-icons-left has-icons-right">
+        <input class="input" type="email" placeholder="Email">
+        <span class="icon is-small is-left">
+          <i class="fas fa-envelope"></i>
+        </span>
+        <span class="icon is-small is-right">
+          <i class="fas fa-check"></i>
+        </span>
+      </p>
     </div>
 
+    <label class="label">Mot de passe</label>
     <div class="field">
-      <label class="label">Email</label>
-      <div class="control">
-        <input class="input" type="text" placeholder="Text input">
-      </div>
+      <p class="control has-icons-left">
+        <input class="input" type="password" placeholder="Mot de passe">
+        <span class="icon is-small is-left">
+          <i class="fas fa-lock"></i>
+        </span>
+      </p>
+    </div>
+        <div class="field">
+      <p class="control has-icons-left">
+        <input class="input" type="password" placeholder="Confirmation de mot de passe">
+        <span class="icon is-small is-left">
+          <i class="fas fa-lock"></i>
+        </span>
+      </p>
     </div>
 
-    <div class="field">
-      <label class="label">Confirmation email</label>
-      <div class="control">
-        <input class="input" type="text" placeholder="Text input">
+    <div class="field is-grouped">
+      <div class="control sign-up">
+        <button class="button is-primary" type="submit">S'inscrire</button>
       </div>
     </div>
+  </form>
 
-    <div class="field">
-      <label class="label">Mot de passe</label>
-      <div class="control">
-        <input class="input" type="text" placeholder="Text input">
-      </div>
-    </div>
-
-    <div class="field">
-      <label class="label">Confirmation mot de passe</label>
-      <div class="control">
-        <input class="input" type="text" placeholder="Text input">
-      </div>
-    </div>
-  </div>
-
-  <div class="field is-grouped">
-    <div class="control sign-up">
-      <button class="button is-primary">S'inscrire</button>
-    </div>
-  </div>
 </main>
 
 {% include "footer.html" %}
