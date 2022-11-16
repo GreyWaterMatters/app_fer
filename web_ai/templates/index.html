@@ -1,5 +1,14 @@
 {% load static %}
 
+{% if messages %}
+    {% for message in messages %}
+        <div class="notification is-success">
+          <button class="delete"></button>
+          <strong>{{ message }}</strong>
+        </div>
+    {% endfor %}
+{% endif %}
+
 {% include "header.html" %}
 <main>
     <div>

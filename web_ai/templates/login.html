@@ -1,0 +1,24 @@
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% include "header.html" %}
+
+<main>
+  <!--Login-->
+  <div class="container py-5">
+    <h1>Connexion</h1>
+    <form method="POST">
+      {% csrf_token %}
+      {{ login_form|crispy }}
+      <div class="field is-grouped">
+   			<div class="control sign-up">
+              <button class="button is-primary" type="submit">Login</button>
+            </div>
+      </div>
+    </form>
+    <p class="text-center">Don't have an account? <a href="/register">Create an account</a>.</p>
+  </div>
+</main>
+
+{% include "footer.html" %}
