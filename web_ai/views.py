@@ -8,6 +8,8 @@ from django.contrib.auth.forms import AuthenticationForm
 import cv2
 import threading
 
+from .models import Document
+
 
 class VideoCamera(object):
     def __init__(self):
@@ -89,3 +91,22 @@ def logout_request(request):
     logout(request)
     messages.info(request, "You have successfully logged out.")
     return redirect("homepage")
+
+
+def document_save(request):
+    if request.method == "POST":
+        image = request.FILES["face_image"]
+        image_file = Document.objects.create(
+            name=image.name,
+            file=image
+        )
+        image_path = image_file.file.path
+        return render(request, "index.html", {"image_path": image_path})
+    return render(request, "index.html")
+
+
+def profile(request):
+    if request.user.is_authenticated:
+        return render(request, "profile.html")
+    else:
+        return render(request, "error.html")
