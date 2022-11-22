@@ -18,8 +18,10 @@ CREATE TABLE "user"(
 );
 
 CREATE TABLE "history"(
+    id int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     image text NOT NULL,
-    emotion text NOT NULL
+    emotion text NOT NULL,
+    user_id int NOT NULL REFERENCES "user"(id)
 );
 
 COMMIT;
