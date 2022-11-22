@@ -1,14 +1,8 @@
 from django.shortcuts import render, redirect
 from django.views.decorators import gzip
 from django.http import StreamingHttpResponse
-from django.contrib.auth import login, authenticate, logout
-from django.contrib import messages
-from .forms import NewUserForm
-from django.contrib.auth.forms import AuthenticationForm
 import cv2
 import threading
-
-from .models import Document
 
 
 class VideoCamera(object):
@@ -54,59 +48,3 @@ def webcam(request):
 def homepage(request):
     return render(request, "index.html")
 
-
-def register_request(request):
-    if request.method == "POST":
-        form = NewUserForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            messages.success(request, "Registration successful.")
-            return redirect("homepage")
-        messages.error(request, "Unsuccessful registration. Invalid information.")
-    form = NewUserForm()
-    return render(request=request, template_name="register.html", context={"register_form": form})
-
-
-def login_request(request):
-    if request.method == "POST":
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                messages.info(request, f"You are now logged in as {username}.")
-                return redirect("homepage")
-            else:
-                messages.error(request, "Invalid username or password.")
-        else:
-            messages.error(request, "Invalid username or password.")
-    form = AuthenticationForm()
-    return render(request=request, template_name="login.html", context={"login_form": form})
-
-
-def logout_request(request):
-    logout(request)
-    messages.info(request, "You have successfully logged out.")
-    return redirect("homepage")
-
-
-def document_save(request):
-    if request.method == "POST":
-        image = request.FILES["face_image"]
-        image_file = Document.objects.create(
-            name=image.name,
-            file=image
-        )
-        image_path = image_file.file.path
-        return render(request, "index.html", {"image_path": image_path})
-    return render(request, "index.html")
-
-
-def profile(request):
-    if request.user.is_authenticated:
-        return render(request, "profile.html")
-    else:
-        return render(request, "error.html")

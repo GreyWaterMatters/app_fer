@@ -16,7 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from .views import homepage, webcam, webcam_feed, register_request, login_request, logout_request, profile
+from web_ai.views import homepage, webcam, webcam_feed
+from accounts.views import register_request, login_request, logout_request, profile
 
 urlpatterns = [
     path("", homepage, name="homepage"),
