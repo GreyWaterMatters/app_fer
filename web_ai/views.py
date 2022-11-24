@@ -42,9 +42,9 @@ def webcam_feed(request):
 
 
 def webcam(request):
-    return render(request, "webcam.html")
+    return render(request, "web_ai/webcam.html")
 
 
 def homepage(request):
-    return render(request, "index.html")
+    return render(request, "web_ai/index.html")
 
