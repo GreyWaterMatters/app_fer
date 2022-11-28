@@ -13,6 +13,9 @@ import cv2
 
 emotions = {0: 'Angry', 1: 'Disgust', 2: 'Fear', 3: 'Happy', 4: 'Sad', 5: 'Surprise', 6: 'Neutral'}
 
+## TODO
+# Stop authenticated users from being able to access register and login
+# GET id from user in request
 
 # Create your views here.
 def register_request(request):
@@ -25,7 +28,7 @@ def register_request(request):
             return redirect("homepage")
         messages.error(request, "Unsuccessful registration. Invalid information.")
     form = NewUserForm()
-    return render(request=request, template_name="register.html", context={"register_form": form})
+    return render(request=request, template_name="accounts/register.html", context={"register_form": form})
 
 
 def login_request(request):
@@ -44,7 +47,7 @@ def login_request(request):
         else:
             messages.error(request, "Invalid username or password.")
     form = AuthenticationForm()
-    return render(request=request, template_name="login.html", context={"login_form": form})
+    return render(request=request, template_name="accounts/login.html", context={"login_form": form})
 
 
 def logout_request(request):
@@ -55,35 +58,33 @@ def logout_request(request):
 
 def profile(request):
     if request.user.is_authenticated:
-        return render(request, "profile.html")
+        return render(request, "accounts/profile.html")
     else:
         return render(request, "error.html")
 
 
 def predict_emotion(request):
     if request.method == 'POST':
-        image_obj = request.FILES['face-image'].read()
-        image = preprocess_image(image_obj)
+
+        image_obj = request.FILES['face-image']
+        image_read = request.FILES['face-image'].read()
+        image = preprocess_image(image_read)
 
         model = load_model("/home/greywater/Documents/Kirae/app/src/model/model_feat_ex_3_contrast_detect_face")
 
-        prediction = np.argmax(model.predict(image), axis=1)[0]
-
-        print(prediction)
-        print(emotions[prediction])
+        prediction = np.argmax(model.predict(image[0]), axis=1)[0]
 
         if request.user.is_authenticated:
 
-            user_id = request.user.id
+            user_id = request.user
 
             image_file = History.objects.create(
-                name=image.name,
-                file_path=image,
-                prediction=prediction,
-                use=user_id
+                name=image_obj.name,
+                file_path=image_obj,
+                prediction=emotions[prediction],
+                user=user_id
             )
 
-            image_file.save()
-        return render(request, "web_ai/index.html", {"prediction": prediction})
+        return render(request, "web_ai/index.html", {"prediction": emotions[prediction], "image": image[1].decode('utf-8')})
 
 

@@ -45,7 +45,18 @@
                       <strong>Webcam</strong>
                   </a>
               </div>
-
+            {% if prediction %}
+                <div class="modal is-active">
+                  <div class="modal-background"></div>
+                  <div class="modal-content">
+                      <div class="box">
+                          <img src="data:image/png;base64,{{ image }}">
+                          <p> {{ prediction }} </p>
+                      </div>
+                  </div>
+                  <button class="modal-close is-large" aria-label="close"></button>
+                </div>
+            {% endif %}
         </div>
       </div>
 </main>

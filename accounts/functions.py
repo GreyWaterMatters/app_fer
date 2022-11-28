@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+import base64
 
 
 def preprocess_image(image):
@@ -15,18 +16,24 @@ def preprocess_image(image):
     cascade = cv2.CascadeClassifier(cascade_file)
 
     faces = cascade.detectMultiScale(
-                image_cv,
-                scaleFactor=1.1,
-                minNeighbors=1,
-                minSize=(30, 30),
-                flags=cv2.CASCADE_SCALE_IMAGE
-            )
+        image_cv,
+        scaleFactor=1.1,
+        minNeighbors=1,
+        minSize=(30, 30),
+        flags=cv2.CASCADE_SCALE_IMAGE
+    )
 
     if len(faces) == 1:
         for (x, y, w, h) in faces:
-            face_image = image_cv[y:y+h, x:x+w]
+            image_rect = cv2.rectangle(image_np, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            ret, frame_buff = cv2.imencode('.png', image_rect)
+            frame_64 = base64.b64encode(frame_buff)
+
+            face_image = image_cv[y:y + h, x:x + w]
             image_face_cv = cv2.resize(face_image, (64, 64))
             image_enhanced = cv2.equalizeHist(image_face_cv)
             image_chan = image_enhanced.reshape(1, 64, 64, 1)
 
-    return image_chan
+            # cv2.imwrite('/home/greywater/Documents/Kirae/app/src/media/temp/', image_rect)
+
+    return image_chan, frame_64
