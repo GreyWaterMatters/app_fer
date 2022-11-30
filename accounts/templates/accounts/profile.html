@@ -95,87 +95,37 @@
     </div>
     <div class="profile-options is-fullwidth">
       <div class="tabs is-fullwidth is-medium">
-        <ul>
-          <li class="link">
             <div>
               <span class="icon">
                 <i class="fa fa-list"></i>
               </span>
               <span>Historique des prédictions</span>
             </div>
-          </li>
-        </ul>
       </div>
     </div>
+    {% if predictions %}
     <div class="box" style="border-radius: 0px;">
       <!-- Main container -->
-    <div class="columns is-mobile">
+      {% for prediction in predictions %}
       <div class="column is-3-tablet is-6-mobile">
         <div class="card">
           <div class="card-image">
             <figure class="image is-4by3">
-              <img alt="" src="https://placehold.it/300x225">
+              <img alt="" src="{% get_media_prefix%}{{ prediction.file_path }}">
             </figure>
           </div>
           <div class="card-content">
             <div class="content">
-              <span class="tag is-dark subtitle">#1</span>
-              <p>Personal Notes on the Property (can be edited and saved automatically by clicking in and clicking out of text area) - these are unique to the user - they will show up as part of a saved listings' info here - but adding notes to a property does not automatically create a saved listing. Likewise, removing this proeprty from saved listings does not auto remove the notes.</p>
+              <span class="tag is-dark subtitle">#{{ prediction.id }}</span>
+              <p>{{ prediction.prediction }}</p>
             </div>
           </div>
-        </div>
         <br>
       </div>
-      <div class="column is-3-tablet is-6-mobile">
-        <div class="card">
-          <div class="card-image">
-            <figure class="image is-4by3">
-              <img alt="" src="https://placehold.it/300x225">
-            </figure>
-          </div>
-          <div class="card-content">
-            <div class="content">
-              <span class="tag is-dark subtitle">#2</span>
-              <p>Personal Notes on the Property (can be edited and saved automatically by clicking in and clicking out of text area) - these are unique to the user - they will show up as part of a saved listings' info here - but adding notes to a property does not automatically create a saved listing. Likewise, removing this proeprty from saved listings does not auto remove the notes.</p>
-            </div>
-          </div>
-        </div>
-        <br>
       </div>
-      <div class="column is-3">
-        <div class="card">
-          <div class="card-image">
-            <figure class="image is-4by3">
-              <img alt="" src="https://placehold.it/300x225">
-            </figure>
-          </div>
-          <div class="card-content">
-            <div class="content">
-              <span class="tag is-dark subtitle">#3</span>
-              <p>Personal Notes on the Property (can be edited and saved automatically by clicking in and clicking out of text area) - these are unique to the user - they will show up as part of a saved listings' info here - but adding notes to a property does not automatically create a saved listing. Likewise, removing this proeprty from saved listings does not auto remove the notes.</p>
-            </div>
-          </div>
-        </div>
-        <br>
-      </div>
-      <div class="column is-3">
-        <div class="card">
-          <div class="card-image">
-            <figure class="image is-4by3">
-              <img alt="" src="https://placehold.it/300x225">
-            </figure>
-          </div>
-          <div class="card-content">
-            <div class="content">
-              <span class="tag is-dark subtitle">#4</span>
-              <p>Personal Notes on the Property (can be edited and saved automatically by clicking in and clicking out of text area) - these are unique to the user - they will show up as part of a saved listings' info here - but adding notes to a property does not automatically create a saved listing. Likewise, removing this proeprty from saved listings does not auto remove the notes.</p>
-            </div>
-          </div>
-          </footer>
-        </div>
-        <br>
-      </div>
+      {% endfor %}
     </div>
+      {% endif %}
     </div>
   </div>
   </div>

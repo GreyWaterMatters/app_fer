@@ -9,7 +9,7 @@ from .functions import preprocess_image
 from .models import History
 
 from tensorflow.keras.models import load_model
-from datetime import date
+from datetime import datetime
 import numpy as np
 import cv2
 import os
@@ -64,6 +64,9 @@ def logout_request(request):
 
 def profile(request):
     if request.user.is_authenticated:
+        predictions = History.objects.all().filter(user_id=request.user.id)
+        if len(predictions) >= 1:
+            return render(request, "accounts/profile.html", {"predictions": predictions})
         return render(request, "accounts/profile.html")
     else:
         return render(request, "error.html")
@@ -72,14 +75,12 @@ def profile(request):
 def predict_emotion(request):
     if request.method == 'POST':
 
-        today = date.today().strftime('%d-%m-%Y_%H-%M-%S')
+        today = datetime.now().strftime('%d-%m-%Y_%H-%M-%S')
         path = settings.MEDIA_ROOT
 
         image_obj = request.FILES['face-image']
         image_read = request.FILES['face-image'].read()
         image = preprocess_image(image_read)
-
-        print(type(image_obj))
 
         model = load_model("/home/greywater/Documents/Kirae/app/src/model/model_feat_ex_3_contrast_detect_face")
 
@@ -94,7 +95,7 @@ def predict_emotion(request):
 
             image_file = History.objects.create(
                 name=image_obj.name,
-                file_path=os.path.join(path, file_path),
+                file_path=file_path,
                 prediction=emotions[prediction],
                 user=user_instance
             )
