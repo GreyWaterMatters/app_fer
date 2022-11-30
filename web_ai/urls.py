@@ -15,18 +15,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
 
 from web_ai.views import homepage, webcam, webcam_feed
 from accounts.views import register_request, login_request, logout_request, profile, predict_emotion
 
 urlpatterns = [
-    path("", homepage, name="homepage"),
-    path("webcam/", webcam, name="webcam"),
-    path("webcam_feed/", webcam_feed, name="webcam_feed"),
-    path("submit_image/", predict_emotion, name="predict_image"),
-    path("register/", register_request, name="register"),
-    path("login/", login_request, name="login"),
-    path("logout/", logout_request, name="logout"),
-    path("profile/", profile, name="profile"),
-    path('admin/', admin.site.urls),
-]
+                  path("", homepage, name="homepage"),
+                  path("webcam/", webcam, name="webcam"),
+                  path("webcam_feed/", webcam_feed, name="webcam_feed"),
+                  path("submit_image/", predict_emotion, name="predict_image"),
+                  path("register/", register_request, name="register"),
+                  path("login/", login_request, name="login"),
+                  path("logout/", logout_request, name="logout"),
+                  path("profile/", profile, name="profile"),
+                  path('admin/', admin.site.urls),
+              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

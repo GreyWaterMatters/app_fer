@@ -50,7 +50,7 @@
                   <div class="modal-background"></div>
                   <div class="modal-content">
                       <div class="box">
-                          <img src="data:image/png;base64,{{ image }}">
+                          <img src="{% get_media_prefix%}{{ image }}">
                           <p> {{ prediction }} </p>
                       </div>
                   </div>

@@ -57,3 +57,8 @@ footer{
 .image-source {
     margin: 1rem;
 }
+
+.box {
+    display: flex;
+    justify-content: space-evenly;
+}

@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
+from django.conf import settings
 from django.contrib import messages
 from accounts.forms import NewUserForm
 from django.contrib.auth.forms import AuthenticationForm
@@ -8,17 +9,19 @@ from .functions import preprocess_image
 from .models import History
 
 from tensorflow.keras.models import load_model
+from datetime import date
 import numpy as np
 import cv2
+import os
 
 emotions = {0: 'Angry', 1: 'Disgust', 2: 'Fear', 3: 'Happy', 4: 'Sad', 5: 'Surprise', 6: 'Neutral'}
 
-## TODO
-# Stop authenticated users from being able to access register and login
-# GET id from user in request
 
 # Create your views here.
 def register_request(request):
+    if request.user.is_authenticated:
+        return redirect("profile")
+
     if request.method == "POST":
         form = NewUserForm(request.POST)
         if form.is_valid():
@@ -32,6 +35,9 @@ def register_request(request):
 
 
 def login_request(request):
+    if request.user.is_authenticated:
+        return redirect("profile")
+
     if request.method == "POST":
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
@@ -66,9 +72,14 @@ def profile(request):
 def predict_emotion(request):
     if request.method == 'POST':
 
+        today = date.today().strftime('%d-%m-%Y_%H-%M-%S')
+        path = settings.MEDIA_ROOT
+
         image_obj = request.FILES['face-image']
         image_read = request.FILES['face-image'].read()
         image = preprocess_image(image_read)
+
+        print(type(image_obj))
 
         model = load_model("/home/greywater/Documents/Kirae/app/src/model/model_feat_ex_3_contrast_detect_face")
 
@@ -76,15 +87,21 @@ def predict_emotion(request):
 
         if request.user.is_authenticated:
 
-            user_id = request.user
+            user_instance = request.user
+            os.makedirs(os.path.join(path, f'file/{str(user_instance.id)}'), exist_ok=True)
+
+            file_path = f'file/{user_instance.id}/prediction_{today}.png'
 
             image_file = History.objects.create(
                 name=image_obj.name,
-                file_path=image_obj,
+                file_path=os.path.join(path, file_path),
                 prediction=emotions[prediction],
-                user=user_id
+                user=user_instance
             )
 
-        return render(request, "web_ai/index.html", {"prediction": emotions[prediction], "image": image[1].decode('utf-8')})
+        else:
+            file_path = f'temp/prediction_{anonymous}.png'
 
+        cv2.imwrite(os.path.join(path, file_path), image[1])
 
+        return render(request, "web_ai/index.html", {"prediction": emotions[prediction], "image": file_path})
