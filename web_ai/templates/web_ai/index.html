@@ -15,7 +15,7 @@
       <img class="home-image" src="{% static 'images/19199398.jpg' %}">
           <form method="POST" class="home-button" enctype="multipart/form-data">
               {% csrf_token %}
-              <div class="file has-name select-option">
+              <div id="file-js-example" class="file has-name select-option is-fullwidth">
                 <label class="file-label">
                   <input class="file-input" type="file" name="face-image" accept="image/*">
                   <span class="file-cta">
@@ -26,11 +26,8 @@
                       Choose a file…
                     </span>
                   </span>
-
                   <span class="file-name">
-                      {% if image_path %}
-                        {{ image_path }}
-                      {% endif %}
+                      No file uploaded
                   </span>
                 </label>
               </div>
