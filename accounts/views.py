@@ -101,7 +101,7 @@ def predict_emotion(request):
             )
 
         else:
-            file_path = f'temp/prediction_{anonymous}.png'
+            file_path = f'temp/prediction_anonymous.png'
 
         cv2.imwrite(os.path.join(path, file_path), image[1])
 
