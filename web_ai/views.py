@@ -1,8 +1,15 @@
 from django.shortcuts import render, redirect
 from django.views.decorators import gzip
 from django.http import StreamingHttpResponse
+from tensorflow.keras.models import load_model
+import numpy as np
 import cv2
 import threading
+
+
+model = load_model("/home/greywater/Documents/Kirae/app/src/model/model_feat_ex_3_contrast_detect_face")
+emotions = {0: 'Angry', 1: 'Disgust', 2: 'Fear', 3: 'Happy', 4: 'Sad', 5: 'Surprise', 6: 'Neutral'}
+
 
 
 class VideoCamera(object):
@@ -16,6 +23,31 @@ class VideoCamera(object):
 
     def get_frame(self):
         image = self.frame
+
+        gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+        dir_cascade_files = r"/home/greywater/Documents/Kirae/app/src/model/.opencv/haarcascades/"
+        cascade_file = dir_cascade_files + "haarcascade_frontalface_alt2.xml"
+
+        cascade = cv2.CascadeClassifier(cascade_file)
+
+        faces = cascade.detectMultiScale(
+            gray_image,
+            scaleFactor=1.1,
+            minNeighbors=1,
+            minSize=(30, 30),
+            flags=cv2.CASCADE_SCALE_IMAGE
+        )
+
+        if len(faces) == 1:
+            for (x, y, w, h) in faces:
+                fc = gray_image[y:y+h, x:x+w]
+                roi = cv2.resize(fc, (64, 64))
+                pred = np.argmax(model.predict(roi[np.newaxis, :, :, np.newaxis]), axis=1)[0]
+
+                cv2.putText(image, emotions[pred], (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 0), 2)
+                cv2.rectangle(image, (x, y), (x+w, y+h), (255, 0, 0), 2)
+
         _, jpeg = cv2.imencode('.jpg', image)
         return jpeg.tobytes()
 
