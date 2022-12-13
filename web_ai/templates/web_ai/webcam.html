@@ -2,6 +2,9 @@
 
 {% include "header.html" %}
 <main>
-    <img class="video-streamer" src="{% url 'webcam_feed' %}">
+    <video autoplay playinline id="videoElement"></video>
+    <canvas id="canvas" width="400" height="300"></canvas>
+    <button id="start_pred" class="button is-primary">Prédire</button>
 </main>
+<script type="text/javascript" src="{% static 'js/app.js' %}"></script>
 {% include "footer.html" %}
