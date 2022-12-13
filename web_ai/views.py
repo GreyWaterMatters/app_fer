@@ -1,15 +1,10 @@
 from django.shortcuts import render, redirect
 from django.views.decorators import gzip
-from django.http import StreamingHttpResponse
-from tensorflow.keras.models import load_model
+from django.http import StreamingHttpResponse, JsonResponse
 import numpy as np
 import cv2
 import threading
-
-
-model = load_model("/home/greywater/Documents/Kirae/app/src/model/model_feat_ex_3_contrast_detect_face")
-emotions = {0: 'Angry', 1: 'Disgust', 2: 'Fear', 3: 'Happy', 4: 'Sad', 5: 'Surprise', 6: 'Neutral'}
-
+import base64
 
 
 class VideoCamera(object):
@@ -65,12 +60,27 @@ def gen(camera):
 
 @gzip.gzip_page
 def webcam_feed(request):
-    print(request.path)
-    try:
-        cam = VideoCamera()
-        return StreamingHttpResponse(gen(cam), content_type="multipart/x-mixed-replace;boundary=frame")
-    except Exception as ex:
-        print(ex)
+    #print(request.path)
+    #try:
+    #    cam = VideoCamera()
+    #    return StreamingHttpResponse(gen(cam), content_type="multipart/x-mixed-replace;boundary=frame")
+    #except Exception as ex:
+    #    print(ex)
+    if request.method == 'POST':
+        try:
+            frame_ = request.POST.get('image')
+            frame_ = str(frame_)
+            data = frame_.replace('data:image/jpeg;base64,', '')
+            data = data.replace(' ', '+')
+            imgdata = base64.b64decode(data)
+            print(imgdata)
+            filename = 'some_image.jpg'
+            with open(filename, 'wb') as f:
+                f.write(imgdata)
+        except:
+            print('Error')
+
+        return JsonResponse({'Json': data})
 
 
 def webcam(request):

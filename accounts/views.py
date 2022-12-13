@@ -8,13 +8,9 @@ from django.contrib.auth.forms import AuthenticationForm
 from .functions import preprocess_image
 from .models import History
 
-from tensorflow.keras.models import load_model
 from datetime import datetime
-import numpy as np
 import cv2
 import os
-
-emotions = {0: 'Angry', 1: 'Disgust', 2: 'Fear', 3: 'Happy', 4: 'Sad', 5: 'Surprise', 6: 'Neutral'}
 
 
 # Create your views here.
@@ -73,6 +69,7 @@ def profile(request):
 
 
 def predict_emotion(request):
+    print(request)
     if request.method == 'POST':
 
         today = datetime.now().strftime('%d-%m-%Y_%H-%M-%S')
@@ -80,29 +77,29 @@ def predict_emotion(request):
 
         image_obj = request.FILES['face-image']
         image_read = request.FILES['face-image'].read()
-        image = preprocess_image(image_read)
+        result = preprocess_image(image_read)
 
-        model = load_model("/home/greywater/Documents/Kirae/app/src/model/model_feat_ex_3_contrast_detect_face")
+        if len(result) == 2:
 
-        prediction = np.argmax(model.predict(image[0]), axis=1)[0]
+            if request.user.is_authenticated:
 
-        if request.user.is_authenticated:
+                user_instance = request.user
+                os.makedirs(os.path.join(path, f'file/{str(user_instance.id)}'), exist_ok=True)
 
-            user_instance = request.user
-            os.makedirs(os.path.join(path, f'file/{str(user_instance.id)}'), exist_ok=True)
+                file_path = f'file/{user_instance.id}/prediction_{today}.png'
 
-            file_path = f'file/{user_instance.id}/prediction_{today}.png'
+                image_file = History.objects.create(
+                    name=image_obj.name,
+                    file_path=file_path,
+                    prediction=result[0],
+                    user=user_instance
+                )
 
-            image_file = History.objects.create(
-                name=image_obj.name,
-                file_path=file_path,
-                prediction=emotions[prediction],
-                user=user_instance
-            )
+            else:
+                file_path = f'temp/prediction_anonymous.png'
 
+            cv2.imwrite(os.path.join(path, file_path), result[1])
+
+            return render(request, "web_ai/index.html", {"prediction": result[0], "image": file_path})
         else:
-            file_path = f'temp/prediction_anonymous.png'
-
-        cv2.imwrite(os.path.join(path, file_path), image[1])
-
-        return render(request, "web_ai/index.html", {"prediction": emotions[prediction], "image": file_path})
+            return render(request, "web_ai/index.html", {"prediction": result})
