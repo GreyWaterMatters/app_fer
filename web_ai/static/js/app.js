@@ -4,6 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let canvas = document.getElementById('canvas');
     let context = canvas.getContext('2d');
     const video = document.querySelector("#videoElement");
+    let image = new Image();
+    let draw_canvas = document.getElementById('detect-data');
+    let draw_context = draw_canvas.getContext('2d');
 
     if (navigator.mediaDevices.getUserMedia) {
         navigator.mediaDevices.getUserMedia({video: true}).then(function (stream) {
@@ -13,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function drawCanvas() {
-                context.drawImage(video, 0, 0, 600, 450);
+                draw_context.drawImage(video, 0, 0, 600, 450);
                 sendMessage(canvas.toDataURL('image/png'));
             }
 

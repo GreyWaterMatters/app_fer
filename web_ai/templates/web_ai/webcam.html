@@ -2,9 +2,11 @@
 
 {% include "header.html" %}
 <main>
-    <video autoplay playinline id="videoElement"></video>
-    <canvas id="canvas" width="400" height="300"></canvas>
+    <video autoplay id="videoElement"></video>
+    <canvas id="canvas" width="400" height="450" class="hide"></canvas>
+    <canvas id="detect-data" width="600" height="450"></canvas>
     <button id="start_pred" class="button is-primary">Prédire</button>
+
 </main>
 <script type="text/javascript" src="{% static 'js/app.js' %}"></script>
 {% include "footer.html" %}

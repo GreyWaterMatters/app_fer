@@ -1,30 +1,33 @@
 import numpy as np
 import cv2
 import base64
+from io import BytesIO
+from PIL import Image
 
 from tensorflow.keras.models import load_model
 
 emotions = {0: 'Angry', 1: 'Disgust', 2: 'Fear', 3: 'Happy', 4: 'Sad', 5: 'Surprise', 6: 'Neutral'}
 
 
-def decode_base64(data) :
+def decode_base64(data):
     out = base64.decodebytes(data.split(",")[1].encode())
     return out
 
 
 def encode_base64(data):
-    if data:
-        return 'data:image/png;base64,' + data
+    return 'data:image/png;base64,' + data
 
 
 def get_image_webcam(data):
     decode = decode_base64(data)
     result = preprocess_image(decode)
 
-    if len(result) == 2:
-        return encode_base64(result[1])
-    else:
-        return encode_base64(result)
+    buffer = BytesIO()
+    img = Image.fromarray(result[1])
+    img.save(buffer, format="png")
+    encoded_string = base64.b64encode(buffer.getvalue()).decode('ascii')
+
+    return encode_base64(encoded_string)
 
 
 def preprocess_image(image):
@@ -66,7 +69,7 @@ def preprocess_image(image):
 
         return emotions[prediction], image_rect
     else:
-        return "No face detected"
+        return "No face detected", image_cv
 
 
 
