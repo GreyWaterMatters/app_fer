@@ -2,11 +2,17 @@
 
 {% include "header.html" %}
 <main>
-    <video autoplay id="videoElement"></video>
-    <canvas id="canvas" width="400" height="450" class="hide"></canvas>
-    <canvas id="detect-data" width="600" height="450"></canvas>
-    <button id="start_pred" class="button is-primary">Prédire</button>
+    <form method="post" id="form-image" enctype="multipart/form-data" action="{% url 'webcam' %}">
+        {% csrf_token %}
+        <video autoplay id="video"></video>
+        <canvas id="canvas" width="600" height="450" class="is-hidden"></canvas>
+        <input type="hidden" name="image" id="face-image">
+        <button id="detect-image" class="button is-primary">Prédire</button>
+        <img src="" id="detect-data" width="600" height="450" class="is-hidden">
+    </form>
 
 </main>
+<script type="text/javascript" src="{% static 'js/jquery.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/materialize.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/app.js' %}"></script>
 {% include "footer.html" %}

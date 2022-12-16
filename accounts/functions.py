@@ -22,8 +22,15 @@ def get_image_webcam(data):
     decode = decode_base64(data)
     result = preprocess_image(decode)
 
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    textsize = cv2.getTextSize(result[0], font, 1, 2)[0]
+    textX = (result[1].shape[1] - textsize[0]) / 2
+    textY = (result[1].shape[0] + textsize[1]) / 2
+    cv2.putText(result[1], result[0], (int(textX), int(textY)), font, 1, (0, 255, 0), 2)
+
     buffer = BytesIO()
     img = Image.fromarray(result[1])
+
     img.save(buffer, format="png")
     encoded_string = base64.b64encode(buffer.getvalue()).decode('ascii')
 
@@ -32,7 +39,7 @@ def get_image_webcam(data):
 
 def preprocess_image(image):
     image_np = np.fromstring(image, np.uint8)
-    image_cv = cv2.imdecode(image_np, cv2.IMREAD_UNCHANGED)
+    image_cv = cv2.imdecode(image_np, cv2.IMREAD_COLOR)
 
     if len(image_cv.shape) == 2 or image_cv.shape[-1] == 1:
         image_gray = image_cv
@@ -51,7 +58,7 @@ def preprocess_image(image):
         flags=cv2.CASCADE_SCALE_IMAGE
     )
 
-    if len(faces) == 1:
+    if len(faces) >= 1:
 
         model = load_model("/home/greywater/Documents/Kirae/app/src/model/model_feat_ex_3_contrast_detect_face")
 
@@ -65,11 +72,10 @@ def preprocess_image(image):
 
             prediction = np.argmax(model.predict(image_chan), axis=1)[0]
 
-            cv2.putText(image_rect, emotions[prediction], (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 0), 2)
-
         return emotions[prediction], image_rect
     else:
-        return "No face detected", image_cv
+        text = "No face detected"
+        return text, image_cv
 
 
 
