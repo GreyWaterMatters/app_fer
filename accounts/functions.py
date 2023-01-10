@@ -60,15 +60,15 @@ def preprocess_image(image):
 
     if len(faces) >= 1:
 
-        model = load_model("/home/greywater/Documents/Kirae/app/src/model/model_feat_ex_3_contrast_detect_face")
+        model = load_model("/home/greywater/Documents/Kirae/app/src/model/model_vgg13")
 
         for (x, y, w, h) in faces:
             image_rect = cv2.rectangle(image_cv, (x, y), (x+w, y+h), (255, 0, 0), 2)
 
             face_image = image_gray[y:y + h, x:x + w]
-            image_face_cv = cv2.resize(face_image, (64, 64))
+            image_face_cv = cv2.resize(face_image, (48, 48))
             image_enhanced = cv2.equalizeHist(image_face_cv)
-            image_chan = image_enhanced.reshape(1, 64, 64, 1)
+            image_chan = image_enhanced.reshape(1, 48, 48, 1)
 
             prediction = np.argmax(model.predict(image_chan), axis=1)[0]
 
