@@ -27,4 +27,5 @@ class History(models.Model):
     name = models.CharField(max_length=100, null=False, blank=False)
     file_path = models.FileField(upload_to='file', max_length=200)
     prediction = models.CharField(max_length=50, null=False, blank=False)
+    true_prediction = models.CharField(max_length=50, null=False, blank=False)
     user = models.ForeignKey(AppUser, to_field='id', on_delete=models.PROTECT)

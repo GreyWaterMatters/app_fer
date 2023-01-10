@@ -57,4 +57,12 @@ document.addEventListener('DOMContentLoaded', () => {
       closeAllModals();
     }
   });
+
+  const dropdown = document.querySelector('.select');
+  const controlNo = document.querySelector('.control-no')
+  const control = document.querySelector('.control')
+  controlNo.addEventListener('click', () => {
+    dropdown.classList.remove('is-hidden');
+    control.classList.add('is-hidden');
+  });
 });

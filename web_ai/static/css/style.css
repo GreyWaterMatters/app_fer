@@ -63,3 +63,20 @@ footer{
     justify-content: space-evenly;
     flex-wrap: wrap;
 }
+
+.prediction {
+    margin: 0.5rem 2rem;
+}
+
+.control {
+    margin: 1rem;
+}
+
+.control-buttons {
+    display: flex;
+    justify-content: center;
+}
+
+.select {
+    margin: 1rem;
+}

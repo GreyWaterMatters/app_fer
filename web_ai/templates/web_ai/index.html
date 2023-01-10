@@ -48,7 +48,32 @@
                   <div class="modal-content">
                       <div class="box">
                           <img src="{% get_media_prefix%}{{ image }}">
-                          <p> {{ prediction }} </p>
+                          <p class="prediction"> {{ prediction }} </p>
+
+                          <div class="control">
+                              <p>La prédiction est-elle correcte ?</p>
+                              <div class="control-buttons">
+                                  <label class="radio">
+                                    <input class="button is-primary" type="button" name="answer" value="Oui">
+                                  </label>
+                                  <label class="radio">
+                                    <input class="button is-primary control-no" type="button" name="answer" value="Non">
+                                  </label>
+                              </div>
+                          </div>
+
+                          <div class="select is-hidden">
+                              <select>
+                                <option>Select emotion</option>
+                                <option>Angry</option>
+                                <option>Disgust</option>
+                                <option>Fear</option>
+                                <option>Happy</option>
+                                <option>Sad</option>
+                                <option>Surprise</option>
+                                <option>Neutral</option>
+                              </select>
+                        </div>
                       </div>
                   </div>
                   <button class="modal-close is-large" aria-label="close"></button>
