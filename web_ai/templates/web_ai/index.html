@@ -52,18 +52,27 @@
 
                           <div class="control">
                               <p>La prédiction est-elle correcte ?</p>
-                              <div class="control-buttons">
+                              <form class="control-buttons" action="/check_prediction/" method="POST">
+                                  {% csrf_token %}
+                                  <input type="hidden" name="file_name" value="{{ image_name }}">
+                                  <input type="hidden" name="file_path" value="{{ image }}">
+                                  <input type="hidden" name="prediction" value="{{ prediction }}">
+                                  <input type="hidden" name="true_prediction" value="{{ prediction }}">
                                   <label class="radio">
-                                    <input class="button is-primary" type="button" name="answer" value="Oui">
+                                    <input class="button is-primary" type="button" name="answer" value="Oui" onclick="this.form.submit()">
                                   </label>
                                   <label class="radio">
                                     <input class="button is-primary control-no" type="button" name="answer" value="Non">
                                   </label>
-                              </div>
+                              </form>
                           </div>
 
-                          <div class="select is-hidden">
-                              <select>
+                          <form class="select is-hidden" action="/check_prediction/" method="POST">
+                              {% csrf_token %}
+                              <input type="hidden" name="file_name" value="{{ image_name }}">
+                              <input type="hidden" name="file_path" value="{{ image }}">
+                              <input type="hidden" name="prediction" value="{{ prediction }}">
+                              <select onchange="this.form.submit()" name="true_prediction">
                                 <option>Select emotion</option>
                                 <option>Angry</option>
                                 <option>Disgust</option>
@@ -73,7 +82,7 @@
                                 <option>Surprise</option>
                                 <option>Neutral</option>
                               </select>
-                        </div>
+                        </form>
                       </div>
                   </div>
                   <button class="modal-close is-large" aria-label="close"></button>

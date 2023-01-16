@@ -88,18 +88,32 @@ def predict_emotion(request):
 
                 file_path = f'file/{user_instance.id}/prediction_{today}.png'
 
-                image_file = History.objects.create(
-                    name=image_obj.name,
-                    file_path=file_path,
-                    prediction=result[0],
-                    user=user_instance
-                )
-
             else:
                 file_path = f'temp/prediction_anonymous.png'
 
             cv2.imwrite(os.path.join(path, file_path), result[1])
 
-            return render(request, "web_ai/index.html", {"prediction": result[0], "image": file_path})
+            return render(request, "web_ai/index.html", {"prediction": result[0], "image": file_path,
+                                                         "image_name": image_obj.name})
         else:
             return render(request, "web_ai/index.html", {"prediction": result})
+
+
+def check_prediction(request):
+
+    if request.method == "POST":
+        user_instance = request.user
+        image_name = request.POST["file_name"]
+        file_path = request.POST["file_path"]
+        prediction = request.POST["prediction"]
+        true_prediction = request.POST["true_prediction"]
+
+        image_file = History.objects.create(
+            name=image_name,
+            file_path=file_path,
+            prediction=prediction,
+            true_prediction=true_prediction,
+            user=user_instance
+        )
+
+    return redirect("homepage")
