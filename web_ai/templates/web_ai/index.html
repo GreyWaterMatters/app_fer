@@ -37,11 +37,13 @@
                   </button>
               </div>
           </form>
+            {% if user.is_authenticated %}
               <div class="buttons select-option">
                   <a class="button is-primary webcam" href="/webcam">
                       <strong>Webcam</strong>
                   </a>
               </div>
+            {% endif %}
             {% if prediction %}
                 <div class="modal is-active">
                   <div class="modal-background"></div>
@@ -49,7 +51,7 @@
                       <div class="box">
                           <img src="{% get_media_prefix%}{{ image }}">
                           <p class="prediction"> {{ prediction }} </p>
-
+                            {% if user.is_authenticated %}
                           <div class="control">
                               <p>La prédiction est-elle correcte ?</p>
                               <form class="control-buttons" action="/check_prediction/" method="POST">
@@ -83,6 +85,7 @@
                                 <option>Neutral</option>
                               </select>
                         </form>
+                          {% endif %}
                       </div>
                   </div>
                   <button class="modal-close is-large" aria-label="close"></button>
