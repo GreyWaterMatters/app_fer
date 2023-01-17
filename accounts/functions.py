@@ -54,7 +54,7 @@ def preprocess_image(image):
         image_gray,
         scaleFactor=1.1,
         minNeighbors=1,
-        minSize=(30, 30),
+        minSize=(48, 48),
         flags=cv2.CASCADE_SCALE_IMAGE
     )
 
