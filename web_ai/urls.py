@@ -18,12 +18,13 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
-from web_ai.views import homepage, ImageFaceDetect
+from web_ai.views import homepage, webcam, webcam_feed
 from accounts.views import register_request, login_request, logout_request, profile, predict_emotion, check_prediction
 
 urlpatterns = [
                   path("", homepage, name="homepage"),
-                  path("webcam/", ImageFaceDetect.as_view(), name="webcam"),
+                  path("webcam/", webcam, name="webcam"),
+                  path("webcam_feed", webcam_feed, name="webcam_feed"),
                   path("submit_image/", predict_emotion, name="predict_image"),
                   path("check_prediction/", check_prediction, name="check_prediction"),
                   path("register/", register_request, name="register"),

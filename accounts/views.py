@@ -1,3 +1,4 @@
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.conf import settings
@@ -65,7 +66,7 @@ def profile(request):
             return render(request, "accounts/profile.html", {"predictions": predictions})
         return render(request, "accounts/profile.html")
     else:
-        return render(request, "error.html")
+        raise PermissionDenied
 
 
 def predict_emotion(request):
