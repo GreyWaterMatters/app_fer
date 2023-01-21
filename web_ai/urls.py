@@ -24,7 +24,7 @@ from accounts.views import register_request, login_request, logout_request, prof
 urlpatterns = [
                   path("", homepage, name="homepage"),
                   path("webcam/", webcam, name="webcam"),
-                  path("webcam_feed", webcam_feed, name="webcam_feed"),
+                  path("webcam_feed/", webcam_feed, name="webcam_feed"),
                   path("submit_image/", predict_emotion, name="predict_image"),
                   path("check_prediction/", check_prediction, name="check_prediction"),
                   path("register/", register_request, name="register"),

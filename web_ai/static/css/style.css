@@ -80,3 +80,8 @@ footer{
 .select {
     margin: 1rem;
 }
+
+.video-streamer {
+    margin: 6rem auto;
+    display: flex;
+}

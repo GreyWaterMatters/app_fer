@@ -4,23 +4,61 @@ from django.http import StreamingHttpResponse
 
 from django.views.decorators import gzip
 import cv2
+import time
+import numpy as np
 
-from accounts.functions import preprocess_image
+from tensorflow.keras.models import load_model
+
+
+emotions = {0: 'Angry', 1: 'Disgust', 2: 'Fear', 3: 'Happy', 4: 'Sad', 5: 'Surprise', 6: 'Neutral'}
 
 
 def gen(camera):
+    last_prediction = time.time()
+    model = load_model("/home/greywater/Documents/Kirae/app/src/model/model_vgg13")
+
     while True:
         ret, img = camera.read()
         img_bytes = cv2.imencode('.jpg', img)[1].tobytes()
-        result = preprocess_image(img_bytes)
+
+        image_np = np.fromstring(img_bytes, np.uint8)
+        image_cv = cv2.imdecode(image_np, cv2.IMREAD_COLOR)
+
+        image_gray = cv2.cvtColor(image_cv, cv2.COLOR_BGR2GRAY)
+
+        dir_cascade_files = r"/home/greywater/Documents/Kirae/app/src/model/.opencv/haarcascades/"
+        cascade_file = dir_cascade_files + "haarcascade_frontalface_alt2.xml"
+        cascade = cv2.CascadeClassifier(cascade_file)
+
+        faces = cascade.detectMultiScale(
+            image_gray,
+            scaleFactor=1.1,
+            minNeighbors=1,
+            minSize=(48, 48),
+            flags=cv2.CASCADE_SCALE_IMAGE
+        )
+
+        if len(faces) >= 1:
+            for (x, y, w, h) in faces:
+                image_cv = cv2.rectangle(image_cv, (x, y), (x+w, y+h), (255, 0, 0), 2)
+
+                face_image = image_gray[y:y + h, x:x + w]
+                image_face_cv = cv2.resize(face_image, (48, 48))
+                image_enhanced = cv2.equalizeHist(image_face_cv)
+                image_chan = image_enhanced.reshape(1, 48, 48, 1)
+
+            if time.time() - last_prediction >= 5:
+                prediction = emotions[np.argmax(model.predict(image_chan), axis=1)[0]]
+        else:
+            prediction = "No face detected"
 
         font = cv2.FONT_HERSHEY_SIMPLEX
-        text_size = cv2.getTextSize(result[0], font, 1, 2)[0]
-        text_X = (result[1].shape[1] - text_size[0]) / 2
-        text_Y = (result[1].shape[0] + text_size[1]) / 2
-        cv2.putText(result[1], result[0], (int(text_X), int(text_Y)), font, 1, (0, 255, 0), 2)
+        text_size = cv2.getTextSize(prediction, font, 1, 2)[0]
+        text_X = (image_cv.shape[1] - text_size[0]) / 2
+        text_Y = (image_cv.shape[0] + text_size[1]) / 2
+        cv2.putText(image_cv, prediction, (int(text_X), int(text_Y)), font, 1, (0, 255, 0), 2)
 
-        _, jpeg = cv2.imencode('.jpg', result[1])
+        _, jpeg = cv2.imencode('.jpg', image_cv)
 
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + jpeg.tobytes() + b'\r\n\r\n')
