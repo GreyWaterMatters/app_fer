@@ -1,12 +1,11 @@
-from django.core.exceptions import PermissionDenied
-from django.shortcuts import render
-from django.http import StreamingHttpResponse
-
-from django.views.decorators import gzip
 import cv2
 import time
 import numpy as np
 
+from django.core.exceptions import PermissionDenied
+from django.shortcuts import render
+from django.http import StreamingHttpResponse
+from django.views.decorators import gzip
 from tensorflow.keras.models import load_model
 
 

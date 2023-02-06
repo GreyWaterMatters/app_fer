@@ -1,17 +1,53 @@
+import cv2
+import os
+import logging
+
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.conf import settings
 from django.contrib import messages
-from accounts.forms import NewUserForm
+
 from django.contrib.auth.forms import AuthenticationForm
 
+from datetime import datetime
+
+from .forms import NewUserForm
 from .functions import preprocess_image
 from .models import History
 
-from datetime import datetime
-import cv2
-import os
+logging.config.dictConfig({
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'console': {
+            'format': '%(name)-12s %(levelname)-8s %(message)s'
+        },
+        'file': {
+            'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
+        }
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'console'
+        },
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'formatter': 'file',
+            'filename': '/home/greywater/Documents/Kirae/app/src/tmp/debug.log'
+        }
+    },
+    'loggers': {
+        '': {
+            'level': 'DEBUG',
+            'handlers': ['console', 'file']
+        }
+    }
+})
+
+logger = logging.getLogger(__name__)
 
 
 # Create your views here.
@@ -25,9 +61,12 @@ def register_request(request):
             user = form.save()
             login(request, user)
             messages.success(request, "Registration successful.")
+            logger.info(f'New user registered: {user}')
             return redirect("homepage")
         messages.error(request, "Unsuccessful registration. Invalid information.")
+        logger.error('Failed registration')
     form = NewUserForm()
+
     return render(request=request, template_name="accounts/register.html", context={"register_form": form})
 
 
@@ -44,10 +83,13 @@ def login_request(request):
             if user is not None:
                 login(request, user)
                 messages.info(request, f"You are now logged in as {username}.")
+                logger.info(f'User {username} is logged !')
                 return redirect("homepage")
             else:
+                logger.error(f'Failed login')
                 messages.error(request, "Invalid username or password.")
         else:
+            logger.error(f'Failed login')
             messages.error(request, "Invalid username or password.")
     form = AuthenticationForm()
     return render(request=request, template_name="accounts/login.html", context={"login_form": form})
