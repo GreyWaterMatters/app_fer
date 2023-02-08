@@ -1,6 +1,5 @@
 import cv2
 import os
-import logging
 
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import render, redirect
@@ -15,39 +14,7 @@ from datetime import datetime
 from .forms import NewUserForm
 from .functions import preprocess_image
 from .models import History
-
-logging.config.dictConfig({
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'console': {
-            'format': '%(name)-12s %(levelname)-8s %(message)s'
-        },
-        'file': {
-            'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
-        }
-    },
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-            'formatter': 'console'
-        },
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'formatter': 'file',
-            'filename': '/home/greywater/Documents/Kirae/app/src/tmp/debug.log'
-        }
-    },
-    'loggers': {
-        '': {
-            'level': 'DEBUG',
-            'handlers': ['console', 'file']
-        }
-    }
-})
-
-logger = logging.getLogger(__name__)
+from web_ai.logging import logger
 
 
 # Create your views here.
